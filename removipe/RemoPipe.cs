@@ -13,6 +13,7 @@ using MetroFramework.Forms;
 using log4net;
 using log4net.Config;
 using System.IO;
+using removipe.Common;
 
 namespace removipe
 {
@@ -32,17 +33,17 @@ namespace removipe
         Thread valveControlThread = null;
         public static RemoPipe remopipe;
 
-        const string portName = "COM7";
+        const string portName = "COM2";
         const string password = "1234";
         const int MAX_STAGE_COUNT = 16;
         public string receivePassword;
+        int count = 0;
+
 
         public RemoPipe()
         {
             InitializeComponent();
             remopipe = this;
-
-            XmlConfigurator.Configure(new FileInfo("log4net.xml"));
 
             this.FormClosed += new FormClosedEventHandler(RemoPipe_Closing);
         }
@@ -59,18 +60,18 @@ namespace removipe
                 {
                     valveControlThread.Abort();
                 }
-                log.Info("RemoPipe 종료");
+                TraceManager.AddLog("RemoPipe 종료");
                 Application.Exit();
             }
             catch (Exception ex)
             {
-                log.Info("RemoPipe 종료중 문제발생 " + ex);
+                TraceManager.AddLog("RemoPipe 종료중 문제발생 " + ex);
             }
         }
 
         private void RemoPipe_Load(object sender, System.EventArgs e)
         {
-            log.Info("RemoPipe 실행");
+            TraceManager.AddLog("RemoPipe 실행");
 
 
             for (int i = 0; i < MAX_STAGE_COUNT; i++)
@@ -83,13 +84,17 @@ namespace removipe
 
             if (result == false)
             {
-                log.Info("보드 연결상태 확인");
+                TraceManager.AddLog("Port Open 실패");
+
+                TraceManager.AddLog("보드 연결상태 확인");
                 MessageBoxForm messageBox = new MessageBoxForm("보드와 연결을 확인해주세요");
                 messageBox.ShowDialog();
                 Application.Exit();
             }
             else
             {
+                TraceManager.AddLog("RemoPipe Start");
+
                 // valve 상태 초기화
                 serialcom.closeSolValve();
                 sensorStatus[0].SolValve = false;
@@ -118,6 +123,8 @@ namespace removipe
             lbl_Valve.Visible = true;
             listview_log.Visible = false;
 
+            lbl_simulatormode.Visible = false;
+
             pro_inlet.Value = 0;
             pro_outlet.Value = 0;
         }
@@ -138,28 +145,12 @@ namespace removipe
                 int valveInterval;
 
                 int pressCount;
-                int count = 0;
 
                 bool simulatorMode = false;
 
 
                 while (true)
                 {
-
-                    /*                    if (!serialcom.CheckCommunication())
-                                        {
-                                            MessageBoxForm messageBox = new MessageBoxForm("보드 연결상태 확인");
-                                            messageBox.ShowDialog();
-                                            log.Info("보드 연결상태 확인");
-                                            return;
-                                        }*/
-
-                    // 화면 데이터 수신
-                    serialcom.getAllState(MAX_STAGE_COUNT, simulatorMode);
-
-                    // TODO 센서 수신 주기
-                    Thread.Sleep(1000);
-
                     // 설정 값 갱신
                     valvePressOpen = commonSetting.ValvePressOpen;
                     valvePressInterval = commonSetting.ValvePressInterval;
@@ -175,14 +166,31 @@ namespace removipe
 
                     simulatorMode = commonSetting.SimulatorMode;
 
+                    if (simulatorMode)
+                    {
+                        lbl_simulatormode.Visible = true;
+                    }
+                    else
+                    {
+                        lbl_simulatormode.Visible = false;
+                    }
+
+                    if (!serialcom.getAllState(MAX_STAGE_COUNT, simulatorMode))
+                    {
+                        TraceManager.AddLog("getAllState fail");
+                    }
 
                     if (valvePressOpen == true)
                     {
+                        
                         float pressure = 0;
 
-                        pressure = sensorStatus[0].PresureSensor - sensorStatus[2].PresureSensor;
+                        lock (sensorStatus)
+                        {
+                            pressure = sensorStatus[0].PresureSensor - sensorStatus[2].PresureSensor;
+                        }
 
-                        if (pressure <= valvePressOpenValue)
+                        if (pressure > valvePressOpenValue)
                         {
                             if (count < pressCount)
                             {
@@ -190,7 +198,6 @@ namespace removipe
                             }
                             else
                             {
-                                // 0 == press
                                 serialcom.valveCtrQueue(valvePressInterval, valvePressRepeatValue, valveInterval, 0);
                                 count = 0;
                             }
@@ -199,27 +206,27 @@ namespace removipe
                         {
                             count = 0;
                         }
+                        lbl_count.Text = "실행 Count(Now / Set): " + count + " / " + pressCount;
+                        lbl_pressure_info.Text = "압력차(Now / Set): " + String.Format("{0,1:0.00}", pressure) + "/" + String.Format("{0,1:0.00}", valvePressOpenValue);
+
                     }
 
                     if (valveTimeOpen == true)
                     {
                         DateTime nowTime = DateTime.Now;
-
+                        lbl_time_info.Text = "다음 실행시간: " + (lastValveOpenTime.AddMinutes(valveTimeOpenValue)).ToString("HH:mm:ss");
                         if (valveTimeOpenValue <= valveOpenTime(nowTime))
                         {
-                            // 1 == time
                             serialcom.valveCtrQueue(valveTimeInterval, valveTimeRepeatValue, valveInterval, 1);
                             lastValveOpenTime = nowTime;
                         }
                     }
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                 }
             }
             catch (Exception ex)
             {
-                log.Info("센서 제어 중 에러: " + ex);
-                MessageBoxForm messageBox = new MessageBoxForm("화면갱신 종료");
-                messageBox.ShowDialog();
+                TraceManager.AddLog("센서 제어 중 에러: " + ex);
             }
         }
 
@@ -235,23 +242,29 @@ namespace removipe
 
         private void updateSensorData()
         {
-            crossThread(lbl_Inlet_Flow_Value, lbl_Outlet_Flow_Value, lbl_close, lbl_open, sensorStatus, lbl_time);
+            crossThread(lbl_Inlet_Flow_Value, lbl_Outlet_Flow_Value, lbl_close, lbl_open, sensorStatus, lbl_time, lbl_pressure_info, panel_close, lbl_count, lbl_time_info);
         }
 
         /// <summary>
         /// Monitoring Sensor값 갱신 함수
         /// </summary>
-        public void crossThread(Control inlet, Control outlet, Control close, Control open, List<SensorStatus> sensorStatus, Control time)
+        public void crossThread(Control inlet, Control outlet, Control close, Control open, List<SensorStatus> sensorStatus, Control time, Control info, Control closePanal, Control count, Control timeInfo)
         {
             try
             {
+                float inletValue = 0;
+                float outletValue = 0;
+                bool solStatus = false;
+                float openValue = 0;
+                float presureDiff = 0;
+
                 while (true)
                 {
-                    float inletValue = 0;
-                    float outletValue = 0;
-
                     inletValue = sensorStatus[0].PresureSensor;
                     outletValue = sensorStatus[2].PresureSensor;
+                    solStatus = sensorStatus[0].SolValve;
+                    
+                    presureDiff = inletValue - outletValue;
 
                     if (time.InvokeRequired)
                     {
@@ -294,30 +307,64 @@ namespace removipe
                         }));
                     }
 
-                    if (close.InvokeRequired)
+                    if (open.InvokeRequired)
                     {
-                        close.BeginInvoke(new MethodInvoker(delegate ()
+                        open.BeginInvoke(new MethodInvoker(delegate ()
                         {
-                            if (sensorStatus[0].SolValve == true)
+                            if (solStatus == true)
                             {
-                                close.Visible = false;
                                 open.Visible = true;
                             }
                             else
                             {
-                                close.Visible = true;
                                 open.Visible = false;
                             }
                         }));
                     }
 
-                    // TODO 화면 갱신 주기
-                    Thread.Sleep(1000);
+                    if (close.InvokeRequired)
+                    {
+                        close.BeginInvoke(new MethodInvoker(delegate ()
+                        {
+                            if (solStatus == true)
+                            {
+                                close.Visible = false;
+                            }
+                            else
+                            {
+                                close.Visible = true;
+                            }
+                        }));
+                    }
+
+                    if (closePanal.InvokeRequired)
+                    {
+                        closePanal.BeginInvoke(new MethodInvoker(delegate ()
+                        {
+                            if (solStatus == true)
+                            {
+                                closePanal.Visible = false;
+                            }
+                            else
+                            {
+                                closePanal.Visible = true;
+                            }
+                        }));
+                    }
+
+/*                    if (info.InvokeRequired)
+                    {
+                        info.BeginInvoke(new MethodInvoker(delegate ()
+                        {
+                            info.Text = "압력차(Now / Set): " + String.Format("{0,1:0.00}", presureDiff) + "/" + String.Format("{0,1:0.00}", openValue);
+                        }));
+                    }*/
+                    Thread.Sleep(100);
                 }
             }
             catch (Exception ex)
             {
-                log.Info("화면 갱신 중 에러: " + ex);
+                TraceManager.AddLog("화면갱신중 에러" + ex.StackTrace);
             }
         }
 
@@ -343,9 +390,6 @@ namespace removipe
                     MessageBoxForm messageBox = new MessageBoxForm("패스워드를 확인해주세요");
                     messageBox.ShowDialog();
                 }
-            }
-            else
-            {
             }
         }
 
@@ -390,6 +434,8 @@ namespace removipe
                     {
                         valveControlThread.Abort();
                     }
+                    TraceManager.AddLog("RemoPipe 종료");
+
                     Application.Exit();
                 }
                 else
@@ -401,7 +447,7 @@ namespace removipe
             }
             catch (Exception ex)
             {
-
+                TraceManager.AddLog("RemoPipe 종료 중 에러" + ex.StackTrace);
             }
         }
 
@@ -412,10 +458,9 @@ namespace removipe
         {
             try
             {
-                bool result = false;
                 if (sensorStatus[0].SolValve == false)
                 {
-                    log.Info("벨브가 이미 닫혀있습니다.");
+                    TraceManager.AddLog("벨브가 이미 닫혀있습니다.");
                     MessageBoxForm messageBox = new MessageBoxForm("벨브가 이미 닫혀있습니다.");
                     messageBox.ShowDialog();
                 }
@@ -423,27 +468,45 @@ namespace removipe
                 {
                     if (valveManual.Status == false)
                     {
-                        log.Info("Manual Open시 사용할 수 있습니다.");
+                        TraceManager.AddLog("Manual Open시 사용할 수 있습니다.");
                         MessageBoxForm messageBox = new MessageBoxForm("Manual Open시 사용할 수 있습니다.");
                         messageBox.ShowDialog();
                     }
                     else
                     {
-                        listViewAdd("Manual Close", 0, 0);
-                        Thread.Sleep(1000);
-                        result = serialcom.closeSolValve();
-                        log.Info("밸브 메뉴얼 Close");
-                        sensorStatus[0].SolValve = false;
-                        valveManual.Status = false;
-                        panel_close.Visible = true;
-                        lbl_close.Visible = true;
-                        lbl_open.Visible = false;
+                        valveManual.Use = false;
+
+                        // 이전 작업 대기
+                        Thread.Sleep(100);
+
+                        TraceManager.AddLog("밸브 메뉴얼 Close");
+
+                        if (serialcom.closeSolValve())
+                        {
+                            TraceManager.AddLog("Manual Close");
+                            listViewAdd("Manual Close", "Valve Close", 0, 0);
+                            sensorStatus[0].SolValve = false;
+                            valveManual.Status = false;
+                            panel_close.Visible = true;
+                            lbl_close.Visible = true;
+                            lbl_open.Visible = false;
+                        }
+                        else
+                        {
+                            TraceManager.AddLog("Manual Close Fial");
+                            listViewAdd("Manual Close", "Valve Close Fail", 0, 0);
+                        }
+
+                        // 이전 작업 대기
+                        Thread.Sleep(100);
+
+                        valveManual.Use = true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                log.Info("벨브 메뉴얼 close 중 에러: " + ex);
+                TraceManager.AddLog("벨브 메뉴얼 close 중 Err: " + ex);
             }
 
         }
@@ -455,11 +518,17 @@ namespace removipe
         {
             try
             {
-                bool result = false;
+                if (serialcom.portIsOpen() == false)
+                {
+                    TraceManager.AddLog("Port가 닫혀있습니다.");
+                    MessageBoxForm messageBox = new MessageBoxForm("Port가 닫혀있습니다.");
+                    messageBox.ShowDialog();
+                    return;
+                }
 
                 if (sensorStatus[0].SolValve == true || valveManual.Status == true)
                 {
-                    log.Info("벨브가 이미 열려있습니다.");
+                    TraceManager.AddLog("벨브가 이미 열려있습니다.");
                     MessageBoxForm messageBox = new MessageBoxForm("벨브가 이미 열려있습니다.");
                     messageBox.ShowDialog();
                 }
@@ -467,45 +536,72 @@ namespace removipe
                 {
                     if (valveManual.Use == false)
                     {
-                        log.Info("벨브 동작이 진행중입니다. 잠시후 다시 시도해주세요.");
-                        MessageBoxForm messageBox = new MessageBoxForm("벨브 동작이 진행중입니다. 잠시후 다시 시도해주세요.");
+                        TraceManager.AddLog("벨브 동작이 진행중입니다. 잠시후 다시 시도해주세요.");
+                        MessageBoxForm messageBox = new MessageBoxForm("벨브 동작이 진행중입니다.");
                         messageBox.ShowDialog();
                     }
                     else
                     {
-                        listViewAdd("Manual Open", 0, 0);
                         valveManual.Use = false;
-                        // 이전 작업 마무리 시간
-                        Thread.Sleep(1000);
-                        log.Info("벨브 메뉴얼 Open");
-                        result = serialcom.openSolValve();
-                        valveManual.Status = true;
-                        sensorStatus[0].SolValve = true;
+
+                        // 이전 작업 대기
+                        Thread.Sleep(100);
+
+                        if (serialcom.openSolValve())
+                        {
+                            TraceManager.AddLog("Manual Open");
+                            listViewAdd("Manual Open", "Valve Open", 0, 0);
+                            valveManual.Status = true;
+                            sensorStatus[0].SolValve = true;
+                            panel_close.Visible = false;
+                            lbl_close.Visible = false;
+                            lbl_open.Visible = true;
+                        }
+                        else
+                        {
+                            TraceManager.AddLog("Manual Open Fail");
+                            listViewAdd("Manual Open", "Valve Open Fail", 0, 0);
+                        }
+
+                        // 이전 작업 대기
+                        Thread.Sleep(100);
+
                         valveManual.Use = true;
-                        panel_close.Visible = false;
-                        lbl_close.Visible = false;
-                        lbl_open.Visible = true;
+
                     }
                 }
             }
             catch (Exception ex)
             {
-                log.Info("벨브 메뉴얼 Open중 에러: " + ex);
+                TraceManager.AddLog("벨브 메뉴얼 Open중 Err: " + ex);
             }
         }
 
-        public void listViewAdd(string type, int repre, int interval)
+        public void listViewAdd(string type, string openClose, int repre, int interval)
         {
-            DateTime dateTime = DateTime.Now;
+            try
+            {
+                DateTime dateTime = DateTime.Now;
 
-            List<string> arr = new List<string>();
-            arr.Add(type);
-            arr.Add(dateTime.ToString("yyyy-MM-dd HH:mm:dd"));
-            arr.Add(repre.ToString() + " 회");
-            arr.Add(interval.ToString() + " ms");
+                List<string> arr = new List<string>();
+                arr.Add(dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                arr.Add(type);
+                arr.Add(openClose);
+                arr.Add(repre.ToString() + " ms");
+                arr.Add(interval.ToString() + " 회");
 
-            ListViewItem lvi = new ListViewItem(arr.ToArray());
-            listview_log.Items.Add(lvi);
+                ListViewItem lvi = new ListViewItem(arr.ToArray());
+                listview_log.Items.Add(lvi);
+
+                if (listview_log.Items.Count > 1000)
+                {
+                    listview_log.Items.RemoveAt(0);
+                }
+            }
+            catch(Exception ex)
+            {
+                TraceManager.AddLog("Log 갱신 중 Err:: " + ex);
+            }
         }
     }
 }

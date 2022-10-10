@@ -80,7 +80,7 @@ namespace removipe
             set { valvePressRepeatValue = value; }
         }
 
-        int valvePressInterval = 500;
+        int valvePressInterval = 1000;
         /// <summary>
         /// valveRepeatValue
         /// </summary>
@@ -100,7 +100,7 @@ namespace removipe
             set { valvePressCount = value; }
         }
 
-        int valveTimeOpenValue = 0;
+        int valveTimeOpenValue = 5;
         /// <summary>
         /// valveMinInterval
         /// </summary>
@@ -121,7 +121,7 @@ namespace removipe
             set { valveTimeRepeatValue = value; }
         }
 
-        int valveTimeInterval = 500;
+        int valveTimeInterval = 1000;
         /// <summary>
         /// valveMinInterval
         /// </summary>
@@ -131,7 +131,7 @@ namespace removipe
             set { valveTimeInterval = value; }
         }
 
-        int valveInterval = 1000;
+        int valveInterval = 2000;
         /// <summary>
         /// valveMinInterval
         /// </summary>

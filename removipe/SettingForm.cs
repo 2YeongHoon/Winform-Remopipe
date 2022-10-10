@@ -25,7 +25,7 @@ namespace removipe
         {
             chk_press_open.Checked = newCommonSetting.ValvePressOpen;
             txt_press_interval.Text = newCommonSetting.ValvePressInterval.ToString();
-            txt_press_open_value.Text = String.Format("{0,1:0.0}", newCommonSetting.ValvePressOpenValue);
+            txt_press_open_value.Text = String.Format("{0,1:0.00}", newCommonSetting.ValvePressOpenValue);
             txt_press_repeat_value.Text = newCommonSetting.ValvePressRepeatValue.ToString();
             txt_press_count.Text = newCommonSetting.ValvePressCount.ToString();
 
@@ -70,6 +70,7 @@ namespace removipe
                 newCommonSetting.ValvePressOpenValue = float.Parse(txt_press_open_value.Text);
                 newCommonSetting.ValvePressRepeatValue = Convert.ToInt32(txt_press_repeat_value.Text);
                 newCommonSetting.ValvePressInterval = Convert.ToInt32(txt_press_interval.Text);
+                newCommonSetting.ValvePressCount = Convert.ToInt32(txt_press_count.Text);
 
                 newCommonSetting.ValveTimeOpenValue = Convert.ToInt32(txt_time_open_value.Text);
                 newCommonSetting.ValveTimeRepeatValue = Convert.ToInt32(txt_time_repeat_value.Text);
@@ -136,9 +137,9 @@ namespace removipe
                         message = "배수 반복횟수는 1~10회 입니다.";
                         result = false;
                     }
-                    if (500 > Convert.ToInt32(txt_press_interval.Text))
+                    if (1000 > Convert.ToInt32(txt_press_interval.Text) || 10000 < Convert.ToInt32(txt_press_interval.Text))
                     {
-                        message = "Interval은 500ms 이상입니다.";
+                        message = "배수작동 Interval은 1000ms~10000ms 입니다.";
                         result = false;
                     }
                     if (5 > Convert.ToInt32(txt_press_count.Text))
@@ -150,9 +151,9 @@ namespace removipe
 
                 if (chk_time_open.Checked)
                 {
-                    if (1 > Convert.ToInt32(txt_time_open_value.Text))
+                    if (1 > Convert.ToInt32(txt_time_open_value.Text) || 1440 < Convert.ToInt32(txt_time_open_value.Text))
                     {
-                        message = "벨브 작동 간격은 1분 이상입니다.";
+                        message = "벨브 작동 간격은 1분~1440(24h)입니다.";
                         result = false;
                     }
                     if (1 > Convert.ToInt32(txt_time_repeat_value.Text) || 10 < Convert.ToInt32(txt_time_repeat_value.Text))
@@ -160,9 +161,9 @@ namespace removipe
                         message = "배수 반복횟수는 1~10회 입니다.";
                         result = false;
                     }
-                    if (500 > Convert.ToInt32(txt_time_interval.Text))
+                    if (1000 > Convert.ToInt32(txt_time_interval.Text) || 10000 < Convert.ToInt32(txt_time_interval.Text))
                     {
-                        message = "Interval은 500ms 이상입니다.";
+                        message = "배수작동 Interval은 1000ms~10000ms 입니다.";
                         result = false;
                     }
                 }
@@ -178,12 +179,11 @@ namespace removipe
             }
             catch
             {
-
                 MessageBoxForm messageBox = new MessageBoxForm("올바르지 않은 값이 들어있습니다.");
                 messageBox.ShowDialog();
                 return false;
             }
- 
+
 
             return result;
         }
@@ -194,7 +194,16 @@ namespace removipe
             viewPass.Owner = this;
             if (viewPass.ShowDialog() == DialogResult.OK)
             {
-                txt_press_open_value.Text = String.Format("{0,1:0.00}", float.Parse(receiveData));
+                float bb = 0;
+                bool result2 = float.TryParse(receiveData, out bb);
+                if (result2)
+                {
+                    txt_press_open_value.Text = String.Format("{0,1:0.00}", float.Parse(receiveData));
+                }
+                else
+                {
+                    txt_press_open_value.Text = "0.00";
+                }
             }
         }
 
@@ -258,5 +267,15 @@ namespace removipe
             }
         }
 
+        private void txt_press_count_TextChanged(object sender, EventArgs e)
+        {
+            ViewPassword viewPass = new ViewPassword("setting");
+            viewPass.Owner = this;
+            if (viewPass.ShowDialog() == DialogResult.OK)
+            {
+                txt_press_count.Text = receiveData;
+
+            }
+        }
     }
 }

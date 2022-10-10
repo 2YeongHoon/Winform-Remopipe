@@ -23,7 +23,7 @@ namespace removipe.Common
             set { useSaveLog = value; }
         }
 
-        static int traceMaxDay = 1;
+        static int traceMaxDay = 30;
 
         /// <summary>
         /// 保存する最大日

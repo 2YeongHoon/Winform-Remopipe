@@ -30,10 +30,7 @@
         {
             this.btn_apply = new System.Windows.Forms.Button();
             this.btn_close = new System.Windows.Forms.Button();
-            this.lbl_save_log_date = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
             this.chk_simul_mode = new System.Windows.Forms.CheckBox();
-            this.chk_save_log = new System.Windows.Forms.CheckBox();
             this.chk_press_open = new System.Windows.Forms.CheckBox();
             this.chk_time_open = new System.Windows.Forms.CheckBox();
             this.txt_press_open_value = new System.Windows.Forms.TextBox();
@@ -71,9 +68,9 @@
             this.btn_apply.FlatAppearance.BorderSize = 2;
             this.btn_apply.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_apply.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_apply.Location = new System.Drawing.Point(473, 602);
+            this.btn_apply.Location = new System.Drawing.Point(547, 465);
             this.btn_apply.Name = "btn_apply";
-            this.btn_apply.Size = new System.Drawing.Size(200, 180);
+            this.btn_apply.Size = new System.Drawing.Size(228, 112);
             this.btn_apply.TabIndex = 0;
             this.btn_apply.Text = "Apply";
             this.btn_apply.UseVisualStyleBackColor = false;
@@ -86,50 +83,23 @@
             this.btn_close.FlatAppearance.BorderSize = 2;
             this.btn_close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_close.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_close.Location = new System.Drawing.Point(702, 602);
+            this.btn_close.Location = new System.Drawing.Point(784, 465);
             this.btn_close.Name = "btn_close";
-            this.btn_close.Size = new System.Drawing.Size(200, 180);
+            this.btn_close.Size = new System.Drawing.Size(228, 112);
             this.btn_close.TabIndex = 1;
             this.btn_close.Text = "Close";
             this.btn_close.UseVisualStyleBackColor = false;
             this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
             // 
-            // lbl_save_log_date
-            // 
-            this.lbl_save_log_date.AutoSize = true;
-            this.lbl_save_log_date.Location = new System.Drawing.Point(31, 71);
-            this.lbl_save_log_date.Name = "lbl_save_log_date";
-            this.lbl_save_log_date.Size = new System.Drawing.Size(152, 23);
-            this.lbl_save_log_date.TabIndex = 15;
-            this.lbl_save_log_date.Text = "로그 최대 저장일(d)";
-            // 
-            // textBox3
-            // 
-            this.textBox3.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox3.Location = new System.Drawing.Point(190, 62);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(55, 42);
-            this.textBox3.TabIndex = 14;
-            // 
             // chk_simul_mode
             // 
             this.chk_simul_mode.AutoSize = true;
-            this.chk_simul_mode.Location = new System.Drawing.Point(13, 118);
+            this.chk_simul_mode.Location = new System.Drawing.Point(6, 40);
             this.chk_simul_mode.Name = "chk_simul_mode";
             this.chk_simul_mode.Size = new System.Drawing.Size(137, 27);
             this.chk_simul_mode.TabIndex = 6;
             this.chk_simul_mode.Text = "시뮬레이터모드";
             this.chk_simul_mode.UseVisualStyleBackColor = true;
-            // 
-            // chk_save_log
-            // 
-            this.chk_save_log.AutoSize = true;
-            this.chk_save_log.Location = new System.Drawing.Point(13, 27);
-            this.chk_save_log.Name = "chk_save_log";
-            this.chk_save_log.Size = new System.Drawing.Size(97, 27);
-            this.chk_save_log.TabIndex = 3;
-            this.chk_save_log.Text = "로그 저장";
-            this.chk_save_log.UseVisualStyleBackColor = true;
             // 
             // chk_press_open
             // 
@@ -145,7 +115,7 @@
             // chk_time_open
             // 
             this.chk_time_open.AutoSize = true;
-            this.chk_time_open.Location = new System.Drawing.Point(19, 301);
+            this.chk_time_open.Location = new System.Drawing.Point(19, 293);
             this.chk_time_open.Name = "chk_time_open";
             this.chk_time_open.Size = new System.Drawing.Size(152, 27);
             this.chk_time_open.TabIndex = 4;
@@ -156,7 +126,7 @@
             // txt_press_open_value
             // 
             this.txt_press_open_value.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_press_open_value.Location = new System.Drawing.Point(151, 60);
+            this.txt_press_open_value.Location = new System.Drawing.Point(175, 61);
             this.txt_press_open_value.Name = "txt_press_open_value";
             this.txt_press_open_value.Size = new System.Drawing.Size(116, 42);
             this.txt_press_open_value.TabIndex = 10;
@@ -165,7 +135,7 @@
             // lbl_press_value
             // 
             this.lbl_press_value.AutoSize = true;
-            this.lbl_press_value.Location = new System.Drawing.Point(47, 63);
+            this.lbl_press_value.Location = new System.Drawing.Point(51, 71);
             this.lbl_press_value.Name = "lbl_press_value";
             this.lbl_press_value.Size = new System.Drawing.Size(95, 23);
             this.lbl_press_value.TabIndex = 11;
@@ -174,7 +144,7 @@
             // txt_time_open_value
             // 
             this.txt_time_open_value.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_time_open_value.Location = new System.Drawing.Point(175, 340);
+            this.txt_time_open_value.Location = new System.Drawing.Point(183, 340);
             this.txt_time_open_value.Name = "txt_time_open_value";
             this.txt_time_open_value.Size = new System.Drawing.Size(106, 42);
             this.txt_time_open_value.TabIndex = 12;
@@ -183,18 +153,15 @@
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.Color.White;
-            this.groupBox2.Controls.Add(this.lbl_save_log_date);
-            this.groupBox2.Controls.Add(this.chk_save_log);
-            this.groupBox2.Controls.Add(this.textBox3);
             this.groupBox2.Controls.Add(this.chk_simul_mode);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox2.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(473, 12);
+            this.groupBox2.Location = new System.Drawing.Point(547, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(429, 582);
+            this.groupBox2.Size = new System.Drawing.Size(465, 278);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Log Setting";
+            this.groupBox2.Text = "Simulator Setting";
             // 
             // groupBox1
             // 
@@ -225,12 +192,12 @@
             this.groupBox1.Controls.Add(this.txt_press_open_value);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox1.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(10, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(455, 582);
+            this.groupBox1.Size = new System.Drawing.Size(529, 565);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Default Setting";
+            this.groupBox1.Text = "Auto Setting";
             // 
             // label14
             // 
@@ -252,15 +219,16 @@
             // txt_press_count
             // 
             this.txt_press_count.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_press_count.Location = new System.Drawing.Point(189, 236);
+            this.txt_press_count.Location = new System.Drawing.Point(207, 236);
             this.txt_press_count.Name = "txt_press_count";
             this.txt_press_count.Size = new System.Drawing.Size(78, 42);
             this.txt_press_count.TabIndex = 30;
+            this.txt_press_count.Click += new System.EventHandler(this.txt_press_count_TextChanged);
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(291, 352);
+            this.label11.Location = new System.Drawing.Point(309, 352);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(59, 23);
             this.label11.TabIndex = 29;
@@ -287,16 +255,16 @@
             // txt_valve_interval
             // 
             this.txt_valve_interval.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_valve_interval.Location = new System.Drawing.Point(175, 510);
+            this.txt_valve_interval.Location = new System.Drawing.Point(180, 511);
             this.txt_valve_interval.Name = "txt_valve_interval";
-            this.txt_valve_interval.Size = new System.Drawing.Size(101, 42);
+            this.txt_valve_interval.Size = new System.Drawing.Size(121, 42);
             this.txt_valve_interval.TabIndex = 26;
             this.txt_valve_interval.Click += new System.EventHandler(this.txt_valve_interval_TextChanged);
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(300, 185);
+            this.label8.Location = new System.Drawing.Point(342, 185);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(53, 23);
             this.label8.TabIndex = 25;
@@ -305,7 +273,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(291, 465);
+            this.label7.Location = new System.Drawing.Point(330, 465);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(53, 23);
             this.label7.TabIndex = 24;
@@ -314,7 +282,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(282, 519);
+            this.label6.Location = new System.Drawing.Point(310, 522);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(53, 23);
             this.label6.TabIndex = 23;
@@ -323,7 +291,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(268, 71);
+            this.label5.Location = new System.Drawing.Point(317, 71);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(142, 23);
             this.label5.TabIndex = 22;
@@ -341,9 +309,9 @@
             // txt_time_interval
             // 
             this.txt_time_interval.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_time_interval.Location = new System.Drawing.Point(207, 456);
+            this.txt_time_interval.Location = new System.Drawing.Point(220, 456);
             this.txt_time_interval.Name = "txt_time_interval";
-            this.txt_time_interval.Size = new System.Drawing.Size(74, 42);
+            this.txt_time_interval.Size = new System.Drawing.Size(104, 42);
             this.txt_time_interval.TabIndex = 20;
             this.txt_time_interval.Click += new System.EventHandler(this.txt_time_interval_TextChanged);
             // 
@@ -359,7 +327,7 @@
             // txt_time_repeat_value
             // 
             this.txt_time_repeat_value.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_time_repeat_value.Location = new System.Drawing.Point(207, 397);
+            this.txt_time_repeat_value.Location = new System.Drawing.Point(222, 397);
             this.txt_time_repeat_value.Name = "txt_time_repeat_value";
             this.txt_time_repeat_value.Size = new System.Drawing.Size(74, 42);
             this.txt_time_repeat_value.TabIndex = 18;
@@ -377,9 +345,9 @@
             // txt_press_interval
             // 
             this.txt_press_interval.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_press_interval.Location = new System.Drawing.Point(212, 173);
+            this.txt_press_interval.Location = new System.Drawing.Point(221, 173);
             this.txt_press_interval.Name = "txt_press_interval";
-            this.txt_press_interval.Size = new System.Drawing.Size(78, 42);
+            this.txt_press_interval.Size = new System.Drawing.Size(115, 42);
             this.txt_press_interval.TabIndex = 16;
             this.txt_press_interval.Click += new System.EventHandler(this.txt_press_interval_TextChanged);
             // 
@@ -395,7 +363,7 @@
             // txt_press_repeat_value
             // 
             this.txt_press_repeat_value.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_press_repeat_value.Location = new System.Drawing.Point(202, 118);
+            this.txt_press_repeat_value.Location = new System.Drawing.Point(222, 119);
             this.txt_press_repeat_value.Name = "txt_press_repeat_value";
             this.txt_press_repeat_value.Size = new System.Drawing.Size(79, 42);
             this.txt_press_repeat_value.TabIndex = 14;
@@ -403,9 +371,8 @@
             // 
             // SettingForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(914, 799);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(1024, 600);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btn_close);
@@ -425,10 +392,7 @@
 
         private System.Windows.Forms.Button btn_apply;
         private System.Windows.Forms.Button btn_close;
-        private System.Windows.Forms.CheckBox chk_save_log;
         private System.Windows.Forms.CheckBox chk_simul_mode;
-        private System.Windows.Forms.Label lbl_save_log_date;
-        private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.CheckBox chk_press_open;
         private System.Windows.Forms.CheckBox chk_time_open;
         private System.Windows.Forms.TextBox txt_press_open_value;
