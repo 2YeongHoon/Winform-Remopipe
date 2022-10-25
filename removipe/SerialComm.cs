@@ -315,10 +315,6 @@ namespace removipe
                         byte solL = rdata[1]; //L  (1-8)
                         bool[] solData = getSensorInfo(solU, solL);
 
-                        // TODO TEST후 삭제예정
-                        //PHOTO
-                        //rdata[2]; //U  (9-16)
-                        //rdata[3];//L  (1-8)
                         byte photoU = rdata[2];
                         byte photoL = rdata[3];
                         bool[] photoData = getSensorInfo(photoU, photoL);
